@@ -445,7 +445,7 @@ public class PieRadarChartViewBase: ChartViewBase
     private var _spinAnimator: ChartAnimator!
     
     /// Applys a spin animation to the Chart.
-    public func spin(duration duration: NSTimeInterval, fromAngle: CGFloat, toAngle: CGFloat, easing: ChartEasingFunctionBlock?)
+    public func spin(duration duration: NSTimeInterval, fromAngle: CGFloat, toAngle: CGFloat, easing: ChartEasingFunctionBlock?, completion: ((Bool) -> Void)?)
     {
         if (_spinAnimator != nil)
         {
@@ -456,19 +456,22 @@ public class PieRadarChartViewBase: ChartViewBase
         _spinAnimator.updateBlock = {
             self.rotationAngle = (toAngle - fromAngle) * self._spinAnimator.phaseX + fromAngle
         }
-        _spinAnimator.stopBlock = { self._spinAnimator = nil; }
+        _spinAnimator.stopBlock = {
+            self._spinAnimator = nil
+            completion!(true)
+        }
         
         _spinAnimator.animate(xAxisDuration: duration, easing: easing)
     }
     
-    public func spin(duration duration: NSTimeInterval, fromAngle: CGFloat, toAngle: CGFloat, easingOption: ChartEasingOption)
+    public func spin(duration duration: NSTimeInterval, fromAngle: CGFloat, toAngle: CGFloat, easingOption: ChartEasingOption, completion: ((Bool) -> Void)?)
     {
-        spin(duration: duration, fromAngle: fromAngle, toAngle: toAngle, easing: easingFunctionFromOption(easingOption))
+        spin(duration: duration, fromAngle: fromAngle, toAngle: toAngle, easing: easingFunctionFromOption(easingOption), completion: completion)
     }
     
     public func spin(duration duration: NSTimeInterval, fromAngle: CGFloat, toAngle: CGFloat)
     {
-        spin(duration: duration, fromAngle: fromAngle, toAngle: toAngle, easing: nil)
+        spin(duration: duration, fromAngle: fromAngle, toAngle: toAngle, easing: nil, completion: nil)
     }
     
     public func stopSpinAnimation()
